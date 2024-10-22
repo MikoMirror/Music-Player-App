@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "799926405208",
+    "project_id": "musicglass-f1975",
+    "storage_bucket": "musicglass-f1975.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799926405208:android:fecb9600c2e177a458622d",
+        "android_client_info": {
+          "package_name": "com.dsw.pam.musicGlass"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEOJetCdBjAQWxrY56sZRkTFGUUXgxEWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
