@@ -1,4 +1,4 @@
-package com.mikomi.musicapp.ui.theme
+package com.dsw.pam.musicGlass.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -34,7 +34,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun MusicAppTheme(
+fun MusicGlassTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,

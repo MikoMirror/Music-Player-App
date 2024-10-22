@@ -1,4 +1,4 @@
-package com.mikomi.musicapp.ui.theme
+package com.dsw.pam.musicGlass.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
