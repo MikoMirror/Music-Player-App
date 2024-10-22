@@ -4,7 +4,6 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 
 class AuthRepository(private val auth: FirebaseAuth) {
-
     suspend fun login(email: String, password: String): Result<Boolean> {
         return try {
             auth.signInWithEmailAndPassword(email, password).await()

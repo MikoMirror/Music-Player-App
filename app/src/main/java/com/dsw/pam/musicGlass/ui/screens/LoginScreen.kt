@@ -20,14 +20,14 @@ fun LoginScreen(viewModel: LoginViewModel) {
     ) {
         TextField(
             value = viewModel.email,
-            onValueChange = { viewModel.email = it },
+            onValueChange = { viewModel.onEmailChange(it) },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = viewModel.password,
-            onValueChange = { viewModel.password = it },
+            onValueChange = {viewModel.onPasswordChange(it) },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
@@ -39,7 +39,8 @@ fun LoginScreen(viewModel: LoginViewModel) {
             enabled = !viewModel.isLoading
         ) {
             if (viewModel.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                CircularProgressIndicator(modifier =
+                Modifier.size(24.dp))
             } else {
                 Text("Login")
             }

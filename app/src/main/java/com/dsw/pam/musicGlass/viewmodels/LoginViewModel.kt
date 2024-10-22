@@ -12,32 +12,40 @@ import com.dsw.pam.musicGlass.model.User
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
-    private val authRepository: AuthRepository = AuthRepository(FirebaseAuth.getInstance())
-
-    var email by mutableStateOf("")
-    var password by mutableStateOf("")
+    private val authRepository: AuthRepository =
+        AuthRepository(FirebaseAuth.getInstance())
+    private var _email = mutableStateOf("")
+    val email: String
+        get() = _email.value
+    private var _password = mutableStateOf("")
+    val password: String
+        get() = _password.value
     var loginError by mutableStateOf<String?>(null)
     var isLoading by mutableStateOf(false)
-
     fun login(onSuccess: () -> Unit) {
-        if (email.isBlank() || password.isBlank()) {
+        if (_email.value.isBlank() || _password.value.isBlank()) {
             loginError = "Email and Password cannot be empty."
             return
         }
-
         isLoading = true
         loginError = null
-        val user = User(email, password)
+        val user = User(_email.value, _password.value)
         viewModelScope.launch {
             try {
                 authRepository.login(user.email, user.password)
                 onSuccess()
-                Log.d("Login","Login +")
+                Log.d("Login", "Login successful")
             } catch (exception: Exception) {
                 loginError = exception.message
             } finally {
                 isLoading = false
             }
         }
+    }
+    fun onEmailChange(newEmail: String) {
+        _email.value = newEmail
+    }
+    fun onPasswordChange(newPassword: String) {
+        _password.value = newPassword
     }
 }
