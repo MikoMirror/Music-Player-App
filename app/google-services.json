@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "879750150088",
+    "project_id": "musicglass-d3724",
+    "storage_bucket": "musicglass-d3724.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879750150088:android:7b7e86f8bd400b296bf2fd",
+        "android_client_info": {
+          "package_name": "com.mikomi.musicapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTVkVckZ09omGWYOBM91Uukwm3phOiU-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
