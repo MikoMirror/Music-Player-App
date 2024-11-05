@@ -12,4 +12,13 @@ class AuthRepository(private val auth: FirebaseAuth) {
             Result.failure(e)
         }
     }
+
+    suspend fun register(email: String, password: String): Result<Boolean> {
+        return try {
+            auth.createUserWithEmailAndPassword(email, password).await()
+            Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

@@ -22,7 +22,7 @@ class LoginViewModel : ViewModel() {
         get() = _password.value
     var loginError by mutableStateOf<String?>(null)
     var isLoading by mutableStateOf(false)
-    fun login(onSuccess: () -> Unit) {
+    fun login(onSuccess: (String) -> Unit) {
         if (_email.value.isBlank() || _password.value.isBlank()) {
             loginError = "Email and Password cannot be empty."
             return
@@ -33,7 +33,7 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 authRepository.login(user.email, user.password)
-                onSuccess()
+                onSuccess(user.email)
                 Log.d("Login", "Login successful")
             } catch (exception: Exception) {
                 loginError = exception.message

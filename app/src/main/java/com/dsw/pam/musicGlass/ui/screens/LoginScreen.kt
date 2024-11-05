@@ -10,7 +10,11 @@ import androidx.compose.ui.unit.dp
 import com.dsw.pam.musicGlass.viewmodels.LoginViewModel
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel) {
+fun LoginScreen(
+    viewModel: LoginViewModel,
+    onLoginSuccess: (String) -> Unit,
+    onNavigateToRegister: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -27,23 +31,29 @@ fun LoginScreen(viewModel: LoginViewModel) {
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = viewModel.password,
-            onValueChange = {viewModel.onPasswordChange(it) },
+            onValueChange = { viewModel.onPasswordChange(it) },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { viewModel.login {} },
+            onClick = { viewModel.login(onLoginSuccess) },
             modifier = Modifier.fillMaxWidth(),
             enabled = !viewModel.isLoading
         ) {
             if (viewModel.isLoading) {
-                CircularProgressIndicator(modifier =
-                Modifier.size(24.dp))
+                CircularProgressIndicator(modifier = Modifier.size(24.dp))
             } else {
                 Text("Login")
             }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(
+            onClick = onNavigateToRegister,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Register")
         }
         viewModel.loginError?.let { error ->
             Text(

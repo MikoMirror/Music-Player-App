@@ -13,7 +13,7 @@ import com.dsw.pam.musicGlass.viewmodels.RegistrationViewModel
 
 
 @Composable
-fun RegistrationScreen(viewModel: RegistrationViewModel) {
+fun RegistrationScreen(viewModel: RegistrationViewModel, onNavigateToLogin: () -> Unit) {
     val state = viewModel.state
     Column(
         modifier = Modifier
@@ -53,7 +53,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                viewModel.processIntent(RegistrationIntent.Register)
+                viewModel.processIntent(RegistrationIntent.Register, onNavigateToLogin)
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = !state.isLoading

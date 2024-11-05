@@ -7,12 +7,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dsw.pam.musicGlass.ui.screens.LoginScreen
+import com.dsw.pam.musicGlass.ui.screens.MainScreen
+import com.dsw.pam.musicGlass.ui.screens.RegistrationScreen
 import com.dsw.pam.musicGlass.ui.theme.MusicGlassTheme
 import com.dsw.pam.musicGlass.viewmodels.LoginViewModel
-
+import com.dsw.pam.musicGlass.viewmodels.RegistrationViewModel
+import com.dsw.pam.musicGlass.navigation.NavGraph
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,8 +31,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val loginViewModel: LoginViewModel = viewModel()
-                    LoginScreen(viewModel = loginViewModel)
+                    NavGraph()
                 }
             }
         }
