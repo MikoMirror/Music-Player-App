@@ -7,14 +7,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.dsw.pam.musicGlass.model.RegistrationIntent
-import com.dsw.pam.musicGlass.viewmodels.LoginViewModel
 import com.dsw.pam.musicGlass.viewmodels.RegistrationViewModel
-
 
 @Composable
 fun RegistrationScreen(viewModel: RegistrationViewModel, onNavigateToLogin: () -> Unit) {
     val state = viewModel.state
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -24,49 +22,45 @@ fun RegistrationScreen(viewModel: RegistrationViewModel, onNavigateToLogin: () -
     ) {
         TextField(
             value = state.email,
-            onValueChange = {
-                viewModel.processIntent(RegistrationIntent.EmailChanged(it))
-            },
+            onValueChange = { viewModel.updateEmail(it) },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
+        
         Spacer(modifier = Modifier.height(8.dp))
+        
         TextField(
             value = state.password,
-            onValueChange = {
-                viewModel.processIntent(RegistrationIntent.PasswordChanged(it))
-            },
+            onValueChange = { viewModel.updatePassword(it) },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
+        
         Spacer(modifier = Modifier.height(8.dp))
+        
         TextField(
             value = state.confirmPassword,
-            onValueChange = {
-                viewModel.processIntent(RegistrationIntent.ConfirmPasswordChanged(it))
-            },
+            onValueChange = { viewModel.updateConfirmPassword(it) },
             label = { Text("Confirm Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
+        
         Spacer(modifier = Modifier.height(16.dp))
+        
         Button(
-            onClick = {
-                viewModel.processIntent(RegistrationIntent.Register, onNavigateToLogin)
-            },
+            onClick = { viewModel.register(onNavigateToLogin) },
             modifier = Modifier.fillMaxWidth(),
             enabled = !state.isLoading
         ) {
             if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier =
-                    Modifier.size(24.dp)
-                )
+                CircularProgressIndicator(modifier = Modifier.size(24.dp))
             } else {
                 Text("Register")
             }
         }
+        
         state.registrationError?.let { error ->
             Text(
                 text = error,

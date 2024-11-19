@@ -1,64 +1,62 @@
 package com.dsw.pam.musicGlass.viewmodels
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.dsw.pam.musicGlass.model.AuthRepository
-import com.dsw.pam.musicGlass.model.RegistrationIntent
 import com.dsw.pam.musicGlass.model.RegistrationState
 import kotlinx.coroutines.launch
 
 class RegistrationViewModel : ViewModel() {
-    private val _state = mutableStateOf(RegistrationState())
-    val state: RegistrationState get() = _state.value
     private val authRepository = AuthRepository(FirebaseAuth.getInstance())
+    var state by mutableStateOf(RegistrationState())
+        private set
 
-    fun processIntent(intent: RegistrationIntent, onSuccess: () -> Unit = {}) {
-        when (intent) {
-            is RegistrationIntent.EmailChanged -> {
-                _state.value = _state.value.copy(email = intent.email)
-            }
-            is RegistrationIntent.PasswordChanged -> {
-                _state.value = _state.value.copy(password = intent.password)
-            }
-            is RegistrationIntent.ConfirmPasswordChanged -> {
-                _state.value = _state.value.copy(confirmPassword = intent.confirmPassword)
-            }
-            is RegistrationIntent.Register -> {
-                register(onSuccess)
-            }
-        }
+    fun updateEmail(email: String) {
+        state = state.copy(email = email)
     }
 
-    private fun register(onSuccess: () -> Unit) {
+    fun updatePassword(password: String) {
+        state = state.copy(password = password)
+    }
+
+    fun updateConfirmPassword(confirmPassword: String) {
+        state = state.copy(confirmPassword = confirmPassword)
+    }
+
+    fun register(onSuccess: () -> Unit) {
         if (state.email.isBlank() || state.password.isBlank() || state.confirmPassword.isBlank()) {
-            _state.value = _state.value.copy(registrationError = "All fields are required.")
+            state = state.copy(registrationError = "All fields are required.")
             return
         }
+        
         if (state.password != state.confirmPassword) {
-            _state.value = _state.value.copy(registrationError = "Passwords do not match.")
+            state = state.copy(registrationError = "Passwords do not match.")
             return
         }
 
-        _state.value = _state.value.copy(isLoading = true, registrationError = null)
+        state = state.copy(isLoading = true, registrationError = null)
+        
         viewModelScope.launch {
             try {
                 val result = authRepository.register(state.email, state.password)
                 result.fold(
                     onSuccess = {
-                        _state.value = _state.value.copy(isLoading = false)
+                        state = state.copy(isLoading = false)
                         onSuccess()
                     },
                     onFailure = { exception ->
-                        _state.value = _state.value.copy(
+                        state = state.copy(
                             isLoading = false,
                             registrationError = exception.message
                         )
                     }
                 )
             } catch (e: Exception) {
-                _state.value = _state.value.copy(
+                state = state.copy(
                     isLoading = false,
                     registrationError = e.message
                 )

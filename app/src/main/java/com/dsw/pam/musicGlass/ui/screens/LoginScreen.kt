@@ -15,6 +15,8 @@ fun LoginScreen(
     onLoginSuccess: (String) -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
+    val state = viewModel.state
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -23,39 +25,46 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
         TextField(
-            value = viewModel.email,
-            onValueChange = { viewModel.onEmailChange(it) },
+            value = state.email,
+            onValueChange = { viewModel.updateEmail(it) },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
+        
         Spacer(modifier = Modifier.height(8.dp))
+        
         TextField(
-            value = viewModel.password,
-            onValueChange = { viewModel.onPasswordChange(it) },
+            value = state.password,
+            onValueChange = { viewModel.updatePassword(it) },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
+        
         Spacer(modifier = Modifier.height(16.dp))
+        
         Button(
             onClick = { viewModel.login(onLoginSuccess) },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !viewModel.isLoading
+            enabled = !state.isLoading
         ) {
-            if (viewModel.isLoading) {
+            if (state.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.size(24.dp))
             } else {
                 Text("Login")
             }
         }
+        
         Spacer(modifier = Modifier.height(8.dp))
+        
         Button(
             onClick = onNavigateToRegister,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Register")
         }
-        viewModel.loginError?.let { error ->
+        
+        state.loginError?.let { error ->
             Text(
                 text = error,
                 color = MaterialTheme.colorScheme.error,
