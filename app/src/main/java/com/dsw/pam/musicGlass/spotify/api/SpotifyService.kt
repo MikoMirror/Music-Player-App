@@ -69,6 +69,18 @@ interface SpotifyService {
         @Path("type") type: String,
         @Query("limit") limit: Int = 20
     ): TopItemsResponse
+    /**
+     * Gets the tracks of a specific playlist
+     * Used in: PlaylistScreen to display tracks in a playlist
+     * @param token OAuth token for authentication
+     * @param playlistId Spotify ID of the playlist
+     * @return PlaylistTracksResponse containing list of tracks in the playlist
+     */
+    @GET("playlists/{playlist_id}/tracks")
+    suspend fun getPlaylistTracks(
+        @Header("Authorization") token: String,
+        @Path("playlist_id") playlistId: String
+    ): PlaylistTracksResponse
 
     companion object {
         fun create(): SpotifyService {

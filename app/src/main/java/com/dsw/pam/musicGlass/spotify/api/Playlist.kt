@@ -42,4 +42,16 @@ data class PlaylistsResponse(
     val offset: Int,
     val previous: String?,
     val total: Int
+)
+
+data class PlaylistTracksResponse(
+    val items: List<PlaylistTrackItem>,
+    val total: Int,
+    val limit: Int,
+    val offset: Int
+)
+
+data class PlaylistTrackItem(
+    val track: Track,
+    val added_at: String
 ) 

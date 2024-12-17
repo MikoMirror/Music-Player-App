@@ -22,7 +22,7 @@ import com.dsw.pam.musicGlass.ui.components.CreatePlaylistDialog
 fun MainScreen(
     email: String,
     onNavigateToPlaylists: () -> Unit,
-    spotifyViewModel: SpotifyViewModel = viewModel()
+    spotifyViewModel: SpotifyViewModel
 ) {
     val context = LocalContext.current
     val isAuthenticating by spotifyViewModel.isAuthenticating.collectAsState()

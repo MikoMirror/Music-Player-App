@@ -14,19 +14,15 @@ import com.dsw.pam.musicGlass.spotify.api.SpotifyService
 import com.dsw.pam.musicGlass.spotify.api.Track
 import com.dsw.pam.musicGlass.spotify.api.SpotifyUser
 import com.spotify.sdk.android.auth.*
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import javax.inject.Inject
 
-@HiltViewModel
-class SpotifyViewModel @Inject constructor(
-    private val spotifyService: SpotifyService = SpotifyService.create()
-) : ViewModel() {
-    private val repository = SpotifyRepository()
-    
+class SpotifyViewModel : ViewModel() {
+    private val spotifyService = SpotifyService.create()
+    private val repository = SpotifyRepository(spotifyService)
+
     private val _isAuthenticating = MutableStateFlow(false)
     val isAuthenticating: StateFlow<Boolean> = _isAuthenticating.asStateFlow()
     
@@ -187,12 +183,15 @@ class SpotifyViewModel @Inject constructor(
         _error.value = null
     }
 
-    companion object {
-        fun provideFactory(): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return SpotifyViewModel() as T
-            }
+    suspend fun getPlaylistTracks(playlistId: String): List<Track> {
+        return try {
+            spotifyToken.value?.let { token ->
+                val response = repository.getPlaylistTracks(token, playlistId)
+                response.items.map { it.track }
+            } ?: emptyList()
+        } catch (e: Exception) {
+            Log.e("SpotifyViewModel", "Error fetching playlist tracks", e)
+            emptyList()
         }
     }
 } 

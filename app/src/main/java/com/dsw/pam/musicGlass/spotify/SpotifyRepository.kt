@@ -1,32 +1,11 @@
 package com.dsw.pam.musicGlass.spotify
 
 import com.dsw.pam.musicGlass.spotify.api.*
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class SpotifyRepository {
+class SpotifyRepository @Inject constructor(
     private val spotifyService: SpotifyService
-
-    init {
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        val client = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.spotify.com/v1/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        spotifyService = retrofit.create(SpotifyService::class.java)
-    }
-
+) {
     suspend fun getCurrentUserProfile(token: String) = 
         spotifyService.getCurrentUserProfile("Bearer $token")
 
@@ -50,4 +29,8 @@ class SpotifyRepository {
 
     suspend fun getUserPlaylists(token: String, limit: Int = 50): List<Playlist> =
         spotifyService.getUserPlaylists("Bearer $token", limit).items
+
+    suspend fun getPlaylistTracks(token: String, playlistId: String): PlaylistTracksResponse {
+        return spotifyService.getPlaylistTracks("Bearer $token", playlistId)
+    }
 } 
