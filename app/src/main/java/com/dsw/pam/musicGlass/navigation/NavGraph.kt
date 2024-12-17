@@ -15,6 +15,8 @@ import com.dsw.pam.musicGlass.ui.screens.RegistrationScreen
 import com.dsw.pam.musicGlass.viewmodels.LoginViewModel
 import com.dsw.pam.musicGlass.viewmodels.RegistrationViewModel
 import kotlinx.serialization.Serializable
+import com.dsw.pam.musicGlass.ui.screens.PlaylistScreen
+import com.dsw.pam.musicGlass.viewmodels.SpotifyViewModel
 
 
 @Serializable
@@ -26,12 +28,15 @@ sealed class Screen {
     @Serializable
     data class Main(val email: String) : Screen()
     companion object { fun mainRoute(email: String) = "main/$email" }
+    @Serializable
+    object Playlists : Screen()
 
 
     fun route(): String = when (this) {
         is Login -> "login"
         is Register -> "register"
         is Main -> "main/$email"
+        is Playlists -> "playlists"
     }
 
 
@@ -40,8 +45,11 @@ sealed class Screen {
 @Composable
 fun NavGraph() {
     val navController = rememberNavController()
-
-    NavHost(navController = navController, startDestination = Screen.Login.route()) {
+    
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Login.route()
+    ) {
         composable(Screen.Login.route()) {
             val loginViewModel: LoginViewModel = viewModel()
             LoginScreen(
@@ -69,14 +77,22 @@ fun NavGraph() {
             )
         }
 
-        composable(
-            route = "main/{email}",
-            arguments = listOf(
-                navArgument("email") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
+        composable(Screen.Main.route()) { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email") ?: ""
-            MainScreen(email = email)
+            val spotifyViewModel: SpotifyViewModel = viewModel { SpotifyViewModel.provideFactory() }
+            MainScreen(
+                email = email,
+                onNavigateToPlaylists = { navController.navigate(Screen.Playlists.route()) },
+                spotifyViewModel = spotifyViewModel
+            )
+        }
+
+        composable(Screen.Playlists.route()) {
+            val spotifyViewModel: SpotifyViewModel = viewModel { SpotifyViewModel.provideFactory() }
+            PlaylistScreen(
+                spotifyViewModel = spotifyViewModel,
+                onBackClick = { navController.navigateUp() }
+            )
         }
     }
 } 

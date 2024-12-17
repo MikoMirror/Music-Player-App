@@ -71,5 +71,18 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")
     implementation ("androidx.navigation:navigation-compose:2.8.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+     implementation ("com.spotify.android:auth:1.2.5")
+    
+    // Retrofit for API calls
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    
+    // Optional: Logging interceptor for debugging
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
+    implementation ("androidx.browser:browser:1.7.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("com.google.dagger:hilt-android:2.48")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
 }
+
