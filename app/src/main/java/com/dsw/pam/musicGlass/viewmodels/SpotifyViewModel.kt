@@ -46,7 +46,6 @@ class SpotifyViewModel @Inject constructor(
     val playlists: StateFlow<List<Playlist>> = _playlists.asStateFlow()
 
     fun authenticateSpotify(context: Context) {
-        _isAuthenticating.value = true
         Log.d("SpotifyAuth", "Starting authentication...")
         
         try {
@@ -64,21 +63,26 @@ class SpotifyViewModel @Inject constructor(
             Log.d("SpotifyAuth", "Launched auth URL in browser")
         } catch (e: Exception) {
             Log.e("SpotifyAuth", "Error launching auth URL", e)
-            _isAuthenticating.value = false
             _error.value = "Authentication failed: ${e.message}"
         }
     }
 
     fun handleAuthResponse(response: AuthorizationResponse) {
         Log.d("SpotifyAuth", "Handling auth response: ${response.type}")
-        _isAuthenticating.value = false
         
         when (response.type) {
             AuthorizationResponse.Type.TOKEN -> {
                 Log.d("SpotifyAuth", "Received token: ${response.accessToken.take(5)}...")
                 _spotifyToken.value = response.accessToken
                 viewModelScope.launch {
-                    fetchUserProfile()
+                    try {
+                        _isAuthenticating.value = true
+                        fetchUserProfile()
+                    } catch (e: Exception) {
+                        _error.value = e.message
+                    } finally {
+                        _isAuthenticating.value = false
+                    }
                 }
             }
             AuthorizationResponse.Type.ERROR -> {
@@ -104,9 +108,7 @@ class SpotifyViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             Log.e("SpotifyAuth", "Error fetching user profile", e)
-            _error.value = e.message
-        } finally {
-            _isAuthenticating.value = false
+            throw e  // Propagate the error to be handled by handleAuthResponse
         }
     }
 
@@ -117,7 +119,7 @@ class SpotifyViewModel @Inject constructor(
             Log.d("SpotifyAuth", "Playlists fetched successfully: ${userPlaylists.size}")
         } catch (e: Exception) {
             Log.e("SpotifyAuth", "Error fetching playlists", e)
-            _error.value = e.message
+            throw e  // Propagate the error to be handled by handleAuthResponse
         }
     }
 
@@ -168,10 +170,12 @@ class SpotifyViewModel @Inject constructor(
     fun setToken(token: String) {
         Log.d("SpotifyAuth", "Setting token and fetching profile")
         _spotifyToken.value = token
-        _isAuthenticating.value = true
         viewModelScope.launch {
             try {
+                _isAuthenticating.value = true
                 fetchUserProfile()
+            } catch (e: Exception) {
+                _error.value = e.message
             } finally {
                 _isAuthenticating.value = false
             }

@@ -2,12 +2,12 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
-      <SelectionState runConfigName="app">
+      <SelectionState runConfigName="Android">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-12-17T10:38:21.729584581Z">
+        <DropdownSelection timestamp="2024-12-17T12:29:09.368266192Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/home/miko/.var/app/com.google.AndroidStudio/config/.android/avd/Pixel_6a_API_35.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=14161e7a" />
             </handle>
           </Target>
         </DropdownSelection>

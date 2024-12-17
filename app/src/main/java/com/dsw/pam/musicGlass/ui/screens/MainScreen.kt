@@ -1,5 +1,6 @@
 package com.dsw.pam.musicGlass.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,60 +29,63 @@ fun MainScreen(
     val userProfile by spotifyViewModel.userProfile.collectAsState()
     val error by spotifyViewModel.error.collectAsState()
 
-    Box(
+    LaunchedEffect(userProfile) {
+        if (userProfile != null) {
+            Log.d("SpotifyAuth", "User profile updated in MainScreen: ${userProfile?.display_name}")
+        }
+    }
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp)
-            .systemBarsPadding()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 48.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text("Welcome to Main Screen!")
-            Text("Logged in as: $email")
+        Text(
+            text = "Welcome, $email",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
-            when {
-                isAuthenticating -> {
-                    CircularProgressIndicator()
-                    Text("Connecting to Spotify...")
-                }
-                error != null -> {
-                    Text(
-                        text = "Error: $error",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    Button(
-                        onClick = { 
-                            spotifyViewModel.resetState()
-                            spotifyViewModel.authenticateSpotify(context) 
-                        }
-                    ) {
-                        Text("Retry Spotify Connection")
+        when {
+            isAuthenticating -> {
+                CircularProgressIndicator()
+                Text("Connecting to Spotify...")
+            }
+            error != null -> {
+                Text(
+                    text = "Error: $error",
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(16.dp)
+                )
+                Button(
+                    onClick = { 
+                        spotifyViewModel.resetState()
+                        spotifyViewModel.authenticateSpotify(context) 
                     }
+                ) {
+                    Text("Retry Spotify Connection")
                 }
-                userProfile == null -> {
-                    Button(
-                        onClick = { spotifyViewModel.authenticateSpotify(context) }
-                    ) {
-                        Text("Connect Spotify")
-                    }
+            }
+            userProfile == null -> {
+                Button(
+                    onClick = { spotifyViewModel.authenticateSpotify(context) }
+                ) {
+                    Text("Connect Spotify")
                 }
-                else -> {
-                    Text(
-                        "Connected as: ${userProfile?.display_name}",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Button(
-                        onClick = onNavigateToPlaylists
-                    ) {
-                        Text("View My Playlists")
-                    }
+            }
+            else -> {
+                Text(
+                    text = "Connected as: ${userProfile?.display_name}",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Button(
+                    onClick = onNavigateToPlaylists,
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Text("View My Playlists")
                 }
             }
         }

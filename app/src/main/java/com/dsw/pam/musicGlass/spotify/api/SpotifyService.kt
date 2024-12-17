@@ -55,6 +55,20 @@ interface SpotifyService {
         @Header("Authorization") token: String,
         @Query("limit") limit: Int = 50
     ): PlaylistsResponse
+    /**
+     * Gets the user's top items (tracks or artists)
+     * Used in: MainScreen to display user's top tracks
+     * @param token OAuth token for authentication
+     * @param type Type of items to fetch ("tracks" or "artists")
+     * @param limit Maximum number of items to return
+     * @return TopItemsResponse containing list of tracks or artists
+     */
+    @GET("me/top/{type}")
+    suspend fun getTopItems(
+        @Header("Authorization") token: String,
+        @Path("type") type: String,
+        @Query("limit") limit: Int = 20
+    ): TopItemsResponse
 
     companion object {
         fun create(): SpotifyService {

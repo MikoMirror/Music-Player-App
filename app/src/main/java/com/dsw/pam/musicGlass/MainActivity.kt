@@ -17,12 +17,11 @@ import com.dsw.pam.musicGlass.spotify.SpotifyConfig
 import com.dsw.pam.musicGlass.viewmodels.SpotifyViewModel
 import com.google.firebase.FirebaseApp
 import com.spotify.sdk.android.auth.AuthorizationClient
-import com.spotify.sdk.android.auth.AuthorizationResponse
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val spotifyViewModel: SpotifyViewModel by viewModels { SpotifyViewModel.provideFactory() }
+    private val spotifyViewModel: SpotifyViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavGraph()
+                    NavGraph(spotifyViewModel = spotifyViewModel)
                 }
             }
         }
@@ -51,32 +50,16 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleIntent(intent: Intent?) {
-        intent?.let { nonNullIntent ->
-            val uri = nonNullIntent.data
-            Log.d("SpotifyAuth", "handleIntent - URI: $uri")
-            
-            if (uri?.scheme == "musicglass" && uri.host == "callback") {
+        intent?.data?.let { uri ->
+            Log.d("SpotifyAuth", "onNewIntent called with data: $uri")
+            if (uri.toString().startsWith(SpotifyConfig.REDIRECT_URI)) {
                 Log.d("SpotifyAuth", "Processing Spotify callback")
-                try {
-                    val fragment = uri.fragment
-                    if (fragment != null) {
-                        val params = fragment.split("&").associate { 
-                            val parts = it.split("=")
-                            parts[0] to parts[1]
-                        }
-                        
-                        val accessToken = params["access_token"]
-                        if (accessToken != null) {
-                            Log.d("SpotifyAuth", "Token extracted, length: ${accessToken.length}")
-                            spotifyViewModel.setToken(accessToken)
-                        } else {
-                            Log.e("SpotifyAuth", "No access token in response")
-                            spotifyViewModel.handleError("No access token received")
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.e("SpotifyAuth", "Error processing callback", e)
-                    spotifyViewModel.handleError("Failed to process callback: ${e.message}")
+                val fragment = uri.fragment
+                if (fragment != null && fragment.contains("access_token=")) {
+                    val token = fragment.substringAfter("access_token=")
+                        .substringBefore("&")
+                    Log.d("SpotifyAuth", "Token extracted, length: ${token.length}")
+                    spotifyViewModel.setToken(token)
                 }
             }
         }
